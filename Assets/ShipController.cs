@@ -1,3 +1,9 @@
+/*
+ * ShipController
+ * 
+ * This script controls the player's ship, allowing movement and shooting.
+ * 
+ */
 using UnityEngine;
 
 public class ShipController : MonoBehaviour
@@ -13,10 +19,6 @@ public class ShipController : MonoBehaviour
     public bool IsShot()
     {
         return isShot;
-    }
-
-    void Start()
-    {
     }
 
     void Update()
@@ -51,7 +53,7 @@ public class ShipController : MonoBehaviour
             ShotEffect.SetActive(false);
             isShot = false;
         }
-
+        
         if (Input.GetKeyDown(KeyCode.X))
         {
             switch(currentShape.GetCurrentShape())

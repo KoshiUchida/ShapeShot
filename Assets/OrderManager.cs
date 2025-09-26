@@ -1,3 +1,10 @@
+/*
+ * OrderManager.cs
+ * 
+ * This script is responsible for managing orders.
+ * 
+ */
+
 using NUnit.Framework;
 using System.Collections.Generic;
 using UnityEngine;
@@ -12,6 +19,8 @@ public class OrderManager : MonoBehaviour
     }
 
     List<Order> orders;
+
+    const int maxOrderCount = 3;
 
     public List<GameObject> shapeObjs;
 
@@ -28,11 +37,7 @@ public class OrderManager : MonoBehaviour
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.N))
-        {
             NewOrder();
-
-           // Destroy(gameObject);
-        }
 
         if (isOrderSuccess)
         {
@@ -52,6 +57,7 @@ public class OrderManager : MonoBehaviour
         }
     }
 
+    // Registration of shaped objects.
     public void AddShapeObj(GameObject obj)
     {
         shapeObjs.Add(obj);
@@ -59,12 +65,14 @@ public class OrderManager : MonoBehaviour
         CheckOrder(obj);
     }
 
+    // Function that checks whether the object matches the order.
     void CheckOrder(GameObject obj)
     {
         if (orders.Count == 0) return;
 
         for (int i = 0; i < orders.Count; i++)
         {
+            // Registers the object as suitable for the orderif none is registered and both colour and shape match.
             if (!orders[i].orderSuccessObj &&
                 orders[i].color == obj.GetComponent<SpriteRenderer>().color &&
                 orders[i].shape == obj.GetComponent<ShapeStruct>().GetCurrentShape())
@@ -75,35 +83,38 @@ public class OrderManager : MonoBehaviour
             }
         }
 
+        // Hhandles processing when all orders are fulfilled.
         if (orders[0].orderSuccessObj && orders[1].orderSuccessObj && orders[2].orderSuccessObj)
         {
             Debug.Log("Order All Success");
             isOrderSuccess = true;
             foreach (var order in orders)
-            {
                 Destroy(order.orderSuccessObj);
-            }
 
             NewOrder();
         }
     }
 
+    // Function that generates a new order.
     void NewOrder()
     {
+        // intialisation of orders.
         orders = new List<Order>();
 
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < maxOrderCount; i++)
         {
             Order order = new Order();
 
-            int rand = Random.Range(0, 3);
+            // Selection of shape
+            int rand = Random.Range(0, maxOrderCount);
             switch (rand)
             {
                 case 0: order.shape = ShapeStruct.Shape.Square; break;
                 case 1: order.shape = ShapeStruct.Shape.Triangle; break;
                 case 2: order.shape = ShapeStruct.Shape.Circle; break;
             }
-            rand = Random.Range(0, 3);
+            // Selection of color
+            rand = Random.Range(0, maxOrderCount);
             switch (rand)
             {
                 case 0: order.color = Color.red; break;
@@ -111,12 +122,11 @@ public class OrderManager : MonoBehaviour
                 case 2: order.color = Color.green; break;
             }
 
+            // Insertion of order
             orders.Add(order);
         }
 
-        if (orders.Count == 3)
-        {
-            orderDrawerManager.ChangeOrderDraw(orders[0], orders[1], orders[2]);
-        }
+        // Update of display
+        orderDrawerManager.ChangeOrderDraw(orders[0], orders[1], orders[2]);
     }
 }
